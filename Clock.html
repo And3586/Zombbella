@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>CT Digital Clock</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: transparent;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .clock-container {
+      text-align: center;
+      padding: 12px 16px;
+      border-radius: 12px;
+    }
+
+    .time {
+      font-size: 32px;
+      font-weight: 600;
+      letter-spacing: 1px;
+    }
+
+    .ampm {
+      font-size: 14px;
+      margin-left: 6px;
+      vertical-align: super;
+    }
+
+    .date {
+      margin-top: 4px;
+      font-size: 14px;
+      opacity: 0.8;
+    }
+  </style>
+</head>
+<body>
+  <div class="clock-container">
+    <div class="time">
+      <span id="time"></span>
+      <span class="ampm" id="ampm"></span>
+    </div>
+    <div class="date" id="date"></div>
+  </div>
+
+  <script>
+    function updateClock() {
+      const now = new Date();
+
+      const optionsTime = {
+        timeZone: "America/Chicago",
+        hour: "numeric",
+        minute: "2-digit",
+        hour12: true
+      };
+
+      const optionsDate = {
+        timeZone: "America/Chicago",
+        month: "long",
+        day: "numeric",
+        year: "numeric"
+      };
+
+      const timeParts = new Intl.DateTimeFormat("en-US", optionsTime)
+        .formatToParts(now);
+
+      const hourMinute = timeParts
+        .filter(p => p.type === "hour" || p.type === "minute" || p.type === "literal")
+        .map(p => p.value)
+        .join("");
+
+      const ampm = timeParts.find(p => p.type === "dayPeriod").value;
+
+      const date = new Intl.DateTimeFormat("en-US", optionsDate).format(now);
+
+      document.getElementById("time").textContent = hourMinute;
+      document.getElementById("ampm").textContent = ampm;
+      document.getElementById("date").textContent = date;
+    }
+
+    updateClock();
+    setInterval(updateClock, 1000);
+  </script>
+</body>
+</html>
